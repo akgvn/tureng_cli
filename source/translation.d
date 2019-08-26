@@ -58,6 +58,7 @@ class Translation_Table
             }
         }
 
+        this.isOtherTerm = false;
         string temp = this.data[0].source;
         foreach (tr; this.data)
         {
@@ -66,16 +67,11 @@ class Translation_Table
                 this.isOtherTerm = true;
             }
         }
-        this.isOtherTerm = false;
-
     }
 
     override string toString()
     {
-        string end = ":";
-
-        if (this.isOtherTerm)
-            end = " (Other):";
+        string end = this.isOtherTerm ? " (Other):" : ":";
 
         return this.source_lang ~ " -> " ~ this.target_lang ~ end;
     }

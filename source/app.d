@@ -20,25 +20,47 @@ void main(string[] args)
 
 	auto html_document = new Document(get_page_html(word));
 
-	auto tt = get_result_tables(html_document);
+	auto ttables = get_result_tables(html_document);
 
-	foreach (t; tt)
+	foreach (t; ttables)
 	{
 		bool other = t.isOtherTerm;
 
-		writeln(t);
+		write("# " ~ t.toString());
 
 		string category = "";
-		foreach (d; t.data)
+		if (!other)
 		{
-			if (d.category == category)
+			foreach (d; t.data)
 			{
-				write(", " ~ d.target);
-			}
-			else {
-				writeln("\n" ~ d.category ~ ": " ~ d.target);
+				if (d.category == category)
+				{
+					write(", " ~ d.target);
+				}
+				else
+				{
+					category = d.category;
+					write("\n" ~ d.category ~ ": " ~ d.target);
+				}
 			}
 		}
+		else
+		{
+			foreach (d; t.data)
+			{
+				if (d.category == category)
+				{
+					write(", " ~ d.source ~ " : " ~ d.target);
+				}
+				else
+				{
+					category = d.category;
+					write("\n" ~ d.category ~ " => " ~ d.source ~ " : " ~ d.target);
+				}
+			}
+		}
+		writeln();
+		writeln();
 	}
 
 }
