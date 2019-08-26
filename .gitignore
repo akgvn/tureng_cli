@@ -13,3 +13,4 @@ tureng_cli-test-*
 *.o
 *.obj
 *.lst
+dub.selections.json
