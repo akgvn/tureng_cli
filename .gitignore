@@ -14,3 +14,4 @@ tureng_cli-test-*
 *.obj
 *.lst
 dub.selections.json
+.vscode/

@@ -22,6 +22,11 @@ void main(string[] args)
 
 	auto ttables = get_result_tables(html_document);
 
+	writer(ttables);
+}
+
+void writer(Translation_Table[] ttables)
+{
 	foreach (t; ttables)
 	{
 		bool other = t.isOtherTerm;

@@ -12,8 +12,8 @@ class Translation
 
     this(string[] data)
     {
-        this.category = data[1];
-        this.source = data[2];
+        this.category = reducer(data[1]);
+        this.source = reducer(data[2]);
         this.target = reducer(data[3]);
     }
 
@@ -80,6 +80,7 @@ class Translation_Table
 string reducer(string st)
 {
     import std.string : strip;
+    import std.array : join, split;
     import std.conv : to;
     import std.algorithm : endsWith;
 
@@ -87,8 +88,10 @@ string reducer(string st)
 
     if (temp.endsWith("."))
     {
-        temp = strip(temp[0 .. $ - 2]);
+        auto temp_arr = temp.split(" ");
+
+        temp = temp_arr[0 .. $ - 1].join(" ");
     }
 
-    return temp;
+    return strip(temp);
 }
