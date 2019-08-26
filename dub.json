@@ -1,0 +1,9 @@
+{
+	"authors": [
+		"akgvn"
+	],
+	"copyright": "Copyright © 2019, akgvn",
+	"description": "CLI for tureng.com",
+	"license": "proprietary",
+	"name": "tureng_cli"
+}

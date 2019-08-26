@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/tureng_cli
+tureng_cli.so
+tureng_cli.dylib
+tureng_cli.dll
+tureng_cli.a
+tureng_cli.lib
+tureng_cli-test-*
+*.exe
+*.o
+*.obj
+*.lst
