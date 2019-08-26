@@ -6,20 +6,20 @@ import arsd.dom : Element;
 
 class Translation
 {
-    public string type;
+    public string category;
     public string source;
     public string target;
 
     this(string[] data)
     {
-        this.type = data[1];
+        this.category = data[1];
         this.source = data[2];
-        this.target = data[3];
+        this.target = reducer(data[3]);
     }
 
     override string toString()
     {
-        return "(" ~ this.type ~ ") " ~ this.source ~ ": " ~ target;
+        return "(" ~ this.category ~ ") " ~ this.source ~ ": " ~ target;
     }
 }
 
@@ -28,6 +28,7 @@ class Translation_Table
     public string source_lang;
     public string target_lang;
     public Translation[] data;
+    public bool isOtherTerm;
 
     this(Element table_html)
     {
@@ -35,7 +36,6 @@ class Translation_Table
         import std.string : strip;
         import std.array : array;
 
-        auto inner_data = appender!(string[]);
         foreach (table_row; table_html.querySelectorAll("tr"))
         {
             auto table_headers = table_row.querySelectorAll("th")
@@ -43,8 +43,8 @@ class Translation_Table
 
             if (table_headers.array() != [])
             {
-                this.source_lang = table_headers[1];
-                this.target_lang = table_headers[2];
+                this.source_lang = table_headers[2];
+                this.target_lang = table_headers[3];
             }
             else
             {
@@ -53,12 +53,31 @@ class Translation_Table
 
                 if (table_data.length > 2) // Filter out the unimportant noise.
                 {
-                    inner_data.put(table_data.map!(st => reducer(st)).array);
+                    this.data ~= new Translation(table_data);
                 }
             }
         }
-        writeln(inner_data);
-        writeln();
+
+        string temp = this.data[0].source;
+        foreach (tr; this.data)
+        {
+            if (tr.source != temp)
+            {
+                this.isOtherTerm = true;
+            }
+        }
+        this.isOtherTerm = false;
+
+    }
+
+    override string toString()
+    {
+        string end = ":";
+
+        if (this.isOtherTerm)
+            end = " (Other):";
+
+        return this.source_lang ~ " -> " ~ this.target_lang ~ end;
     }
 }
 
