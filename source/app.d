@@ -10,26 +10,50 @@ import translation;
 
 void main(string[] args)
 {
+	bool abridged = false;
+	string word;
+
 	if (args.length < 2)
 	{
 		writeln("Run this with at least one argument!");
 		return;
 	}
-
-	const word = args[1];
+	else if (args.length > 2)
+	{
+		foreach (ar; args)
+		{
+			if (ar == "-a")
+			{
+				abridged = true;
+			}
+			else
+			{
+				word = ar;
+			}
+		}
+	}
+	else
+	{
+		word = args[1];
+	}
 
 	auto html_document = new Document(get_page_html(word));
 
 	auto ttables = get_result_tables(html_document);
 
-	writer(ttables);
+	writer(ttables, abridged);
 }
 
-void writer(Translation_Table[] ttables)
+void writer(Translation_Table[] ttables, bool abridged)
 {
 	foreach (t; ttables)
 	{
 		bool other = t.isOtherTerm;
+
+		if (abridged && other)
+		{
+			break;
+		}
 
 		write("# " ~ t.toString());
 
