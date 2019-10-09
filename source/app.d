@@ -79,12 +79,12 @@ void writer(Translation_Table[] ttables, bool abridged)
 			{
 				if (d.category == category)
 				{
-					write(", " ~ d.source ~ " : " ~ d.target);
+					write("\n\t" ~ d.source ~ " : " ~ d.target);
 				}
 				else
 				{
 					category = d.category;
-					write("\n" ~ d.category ~ " => " ~ d.source ~ " : " ~ d.target);
+					write("\n" ~ d.category ~ " => \n\t" ~ d.source ~ " : " ~ d.target);
 				}
 			}
 		}
