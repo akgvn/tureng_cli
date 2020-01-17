@@ -1,6 +1,7 @@
 # tureng_cli
 
-Gets Turkish / English translations from tureng.com
+Command Line Interface to translate words between Turkish / English.
 
-## TODO
-- [ ] Other meanings are sometimes too many.
+Translations are scraped from tureng.com.
+
+Created for personal use.
