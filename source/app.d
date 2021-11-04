@@ -55,7 +55,7 @@ void writer(Translation_Table[] ttables, bool abridged)
 			break;
 		}
 
-		write("# " ~ t.toString());
+		write("# ", t.toString());
 
 		string category = "";
 		if (!other)
@@ -107,10 +107,9 @@ auto get_result_tables(Document doc)
 
 	auto tt = new Translation_Table[tables.length];
 
-	int count = 0;
-	foreach (table; tables)
+	foreach (idx, table; tables)
 	{
-		tt[count++] = new Translation_Table(table);
+		tt[idx] = Translation_Table(table);
 	}
 
 	return tt;

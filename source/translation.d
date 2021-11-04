@@ -27,7 +27,7 @@ struct Translation {
     }
 }
 
-class Translation_Table
+struct Translation_Table
 {
     string source_lang;
     string target_lang;
@@ -75,8 +75,7 @@ class Translation_Table
         }
     }
 
-    override string toString()
-    {
+    string toString() {
         string end = this.isOtherTerm ? " (Other):" : ":";
         return this.source_lang ~ " -> " ~ this.target_lang ~ end;
     }
