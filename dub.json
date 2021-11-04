@@ -3,7 +3,10 @@
 		"akgvn"
 	],
 	"copyright": "Copyright © 2019, akgvn",
+	"dependencies": {
+		"arsd-official:dom": "~>10.3.8"
+	},
 	"description": "CLI for tureng.com",
-	"license": "proprietary",
+	"license": "MIT",
 	"name": "tureng_cli"
 }
