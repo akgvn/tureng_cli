@@ -1,35 +1,40 @@
 module translation;
 
-import std.array : appender;
-import std.stdio;
-import arsd.dom : Element;
+struct Translation {
+    string category;
+    string source;
+    string target;
 
-class Translation
-{
-    public string category;
-    public string source;
-    public string target;
-
-    this(string[] data)
-    {
-        this.category = reducer(data[1]);
-        this.source = reducer(data[2]);
-        this.target = reducer(data[3]);
+    this(string[] data) {
+        this.category = remove_unneeded_info(data[1]);
+        this.source   = remove_unneeded_info(data[2]);
+        this.target   = remove_unneeded_info(data[3]);
     }
 
-    override string toString()
-    {
-        return "(" ~ this.category ~ ") " ~ this.source ~ ": " ~ target;
+    private string remove_unneeded_info(string translated_string) {
+        import std.string : strip;
+        import std.array : join, split;
+        import std.conv : to;
+        import std.algorithm : endsWith;
+
+        if (translated_string.endsWith(".")) {
+            auto temp_arr = translated_string.split(" ");
+
+            translated_string = temp_arr[0 .. $ - 1].join(" ");
+        }
+
+        return translated_string.strip();
     }
 }
 
 class Translation_Table
 {
-    public string source_lang;
-    public string target_lang;
-    public Translation[] data;
-    public bool isOtherTerm;
+    string source_lang;
+    string target_lang;
+    Translation[] data;
+    bool isOtherTerm;
 
+    import arsd.dom : Element;
     this(Element table_html)
     {
         import std.algorithm : map, filter;
@@ -41,7 +46,7 @@ class Translation_Table
             auto table_headers = table_row.querySelectorAll("th")
                 .map!(d => strip(d.innerText)).array;
 
-            if (table_headers.array() != [])
+            if (table_headers.length > 0)
             {
                 this.source_lang = table_headers[2];
                 this.target_lang = table_headers[3];
@@ -53,7 +58,7 @@ class Translation_Table
 
                 if (table_data.length > 2) // Filter out the unimportant noise.
                 {
-                    this.data ~= new Translation(table_data);
+                    this.data ~= Translation(table_data);
                 }
             }
         }
@@ -65,6 +70,7 @@ class Translation_Table
             if (tr.source != temp)
             {
                 this.isOtherTerm = true;
+                break;
             }
         }
     }
@@ -72,26 +78,6 @@ class Translation_Table
     override string toString()
     {
         string end = this.isOtherTerm ? " (Other):" : ":";
-
         return this.source_lang ~ " -> " ~ this.target_lang ~ end;
     }
-}
-
-string reducer(string st)
-{
-    import std.string : strip;
-    import std.array : join, split;
-    import std.conv : to;
-    import std.algorithm : endsWith;
-
-    string temp = strip(to!string(st));
-
-    if (temp.endsWith("."))
-    {
-        auto temp_arr = temp.split(" ");
-
-        temp = temp_arr[0 .. $ - 1].join(" ");
-    }
-
-    return strip(temp);
 }
