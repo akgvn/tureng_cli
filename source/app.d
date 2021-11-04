@@ -1,59 +1,35 @@
-import std.stdio;
-import std.net.curl;
-import arsd.dom;
-import std.conv : to;
-import std.algorithm : endsWith, map;
-import std.array;
-import std.container;
+import std.stdio : write, writeln;
+import std.net.curl : get;
+import arsd.dom : Document;
 import std.uri : encode;
 import translation;
 
 void main(string[] args)
 {
-	bool abridged = false;
 	string word;
 
 	if (args.length < 2)
 	{
-		writeln("Run this with at least one argument!");
+		writeln("Run this with at least one argument! Pass -a as the second argument for the abridged version.");
 		return;
 	}
-	else if (args.length > 2)
-	{
-		foreach (ar; args)
-		{
-			if (ar == "-a")
-			{
-				abridged = true;
-			}
-			else
-			{
-				word = ar;
-			}
-		}
-	}
-	else
-	{
-		word = args[1];
-	}
+	word = args[1];
+	const abridged = args.length == 3 && args[2] == "-a";
 
 	auto html_document = new Document(get_page_html(word));
 
 	auto ttables = get_result_tables(html_document);
 
-	writer(ttables, abridged);
+	print_to_command_line(ttables, abridged);
 }
 
-void writer(Translation_Table[] ttables, bool abridged)
+void print_to_command_line(Translation_Table[] ttables, bool abridged)
 {
 	foreach (t; ttables)
 	{
 		bool other = t.isOtherTerm;
 
-		if (abridged && other)
-		{
-			break;
-		}
+		if (abridged && other) break;
 
 		write("# ", t.toString());
 
@@ -96,14 +72,14 @@ void writer(Translation_Table[] ttables, bool abridged)
 
 string get_page_html(string word)
 {
+	import std.conv : to;
 	string address = "https://tureng.com/en/turkish-english/" ~ word;
 	return to!string(get(address.encode()));
 }
 
-auto get_result_tables(Document doc)
+Translation_Table[] get_result_tables(Document doc)
 {
 	auto tables = doc.querySelectorAll("#englishResultsTable");
-	// auto table = table_html.querySelectorAll("table");
 
 	auto tt = new Translation_Table[tables.length];
 
