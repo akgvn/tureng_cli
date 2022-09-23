@@ -27,37 +27,39 @@ struct Translation {
     }
 }
 
-struct Translation_Table
-{
+struct Translation_Table {
     string source_lang;
     string target_lang;
     Translation[] data;
     bool isOtherTerm;
 
     import arsd.dom : Element;
-    this(Element table_html)
-    {
+    this(Element table_html) {
         import std.algorithm : map, filter;
         import std.string : strip;
         import std.array : array;
 
-        foreach (table_row; table_html.querySelectorAll("tr"))
-        {
-            auto table_headers = table_row.querySelectorAll("th")
-                .map!(d => strip(d.innerText)).array;
+        foreach (table_row; table_html.querySelectorAll("tr")) {
+            auto table_headers =
+                table_row
+                .querySelectorAll("th")
+                .map!(
+                    d => strip(d.innerText)
+                ).array;
 
-            if (table_headers.length > 0)
-            {
+            if (table_headers.length > 0) {
                 this.source_lang = table_headers[2];
                 this.target_lang = table_headers[3];
             }
-            else
-            {
-                auto table_data = table_row.querySelectorAll("td")
-                    .map!(d => strip(d.innerText)).array;
+            else {
+                auto table_data =
+                    table_row
+                    .querySelectorAll("td")
+                    .map!(
+                        d => strip(d.innerText)
+                    ).array;
 
-                if (table_data.length > 2) // Filter out the unimportant noise.
-                {
+                if (table_data.length > 2) { // Filter out the unimportant noise.
                     this.data ~= Translation(table_data);
                 }
             }
@@ -65,10 +67,8 @@ struct Translation_Table
 
         this.isOtherTerm = false;
         string temp = this.data[0].source;
-        foreach (tr; this.data)
-        {
-            if (tr.source != temp)
-            {
+        foreach (tr; this.data) {
+            if (tr.source != temp) {
                 this.isOtherTerm = true;
                 break;
             }
