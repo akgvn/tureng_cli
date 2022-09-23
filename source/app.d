@@ -1,5 +1,5 @@
 import std.stdio : write, writeln;
-import std.net.curl : get;
+import std.net.curl : get, HTTP;
 import arsd.dom : Document;
 import std.uri : encode;
 import translation;
@@ -73,8 +73,23 @@ void print_to_command_line(Translation_Table[] ttables, bool abridged)
 string get_page_html(string word)
 {
 	import std.conv : to;
-	string address = "https://tureng.com/en/turkish-english/" ~ word;
-	return to!string(get(address.encode()));
+	const user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:105.0) Gecko/20100101 Firefox/105.0";
+	const address = "https://tureng.com/en/turkish-english/" ~ word;
+	const encoded_address = address.encode();
+	
+	auto http = HTTP();
+    http.setUserAgent(user_agent);
+	http.method = HTTP.Method.get;
+	http.url = encoded_address;
+    char[] buffer;
+
+	http.onReceive = (ubyte[] data) {
+        buffer ~= data;
+        return data.length;
+    };
+    http.perform();
+
+	return to!string(buffer);
 }
 
 Translation_Table[] get_result_tables(Document doc)
